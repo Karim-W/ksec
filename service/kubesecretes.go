@@ -171,15 +171,15 @@ func handleEnvPath(path string, namespace string, secret string) {
 
 func generateDecalrationFile(secret string, vals *map[string][]byte) {
 	//create file
-	file, err := os.Create(secret + "-secrets.yaml")
+	file, err := os.Create(secret + ".yaml")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 	overall := "env:"
 	//write to file
-	for k, v := range *vals {
-		line := fmt.Sprintf("\n- name: %s\n\tvalueFrom:\n\t\tsecretKeyRef:\n\t\t\tname: %s\n\t\t\tkey: %s", k, secret, string(v))
+	for k, _ := range *vals {
+		line := fmt.Sprintf("\n- name: %s\n\tvalueFrom:\n\t\tsecretKeyRef:\n\t\t\tname: %s\n\t\t\tkey: %s", k, secret, k)
 		overall += line
 	}
 	_, err = file.WriteString(overall)
