@@ -45,7 +45,7 @@ func KubectlSecretsSvc(conf *models.Secrets) {
 		return
 	}
 	if conf.Delete {
-		fmt.Println("Delete")
+		deleteKubeSecret(conf.Namespace, conf.Secret, conf.Key)
 		return
 	}
 	if conf.List {
@@ -83,6 +83,25 @@ func addKubeSecret(namespace string, secret string, key string, value string) {
 	}
 	s.Data[key] = []byte(value)
 	//update secret
+	s, err = GetKubeClient().CoreV1().Secrets(namespace).Update(context.TODO(), s, metav1.UpdateOptions{})
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	for k, v := range s.Data {
+		fmt.Println(k, string(v))
+	}
+}
+
+func deleteKubeSecret(namespace string, secret string, key string) {
+	// get secret
+	s, err := GetKubeClient().CoreV1().Secrets(namespace).Get(context.TODO(), secret, metav1.GetOptions{})
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	delete(s.Data, key)
+	// delete Key through update
 	s, err = GetKubeClient().CoreV1().Secrets(namespace).Update(context.TODO(), s, metav1.UpdateOptions{})
 	if err != nil {
 		println(err.Error())
