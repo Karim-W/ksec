@@ -11,4 +11,5 @@ type Secrets struct {
 	List      bool
 	All       bool
 	Operation string
+	EnvPath   string
 }
