@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/karim-w/ksec/models"
+	"github.com/karim-w/ksec/service"
 	"github.com/spf13/cobra"
 )
 
@@ -15,12 +16,19 @@ var RootCmd = &cobra.Command{
 	Long:  "ksec is a tool for managing secrets in Kubernetes",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
-		fmt.Println("KESC")
-		fmt.Println("===============")
-		fmt.Println("Welcome To Ksec")
-		fmt.Println("How Can I Help")
-		fmt.Println("Version: ", VERSION)
-
+		c := &models.Secrets{
+			Namespace: cmd.Flag("namespace").Value.String(),
+			Secret:    cmd.Flag("secret").Value.String(),
+			Set:       cmd.Flag("set").Value.String() == "true",
+			Key:       cmd.Flag("key").Value.String(),
+			Value:     cmd.Flag("value").Value.String(),
+			Get:       cmd.Flag("get").Value.String() == "true",
+			Delete:    cmd.Flag("delete").Value.String() == "true",
+			List:      cmd.Flag("list").Value.String() == "true",
+			All:       cmd.Flag("all").Value.String() == "true",
+			EnvPath:   cmd.Flag("env").Value.String(),
+		}
+		service.KubectlSecretsSvc(c)
 	},
 }
 var Verbose bool
@@ -35,4 +43,14 @@ func Execute() {
 
 func init() {
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
+	RootCmd.PersistentFlags().StringP("namespace", "n", "default", "namespace")
+	RootCmd.PersistentFlags().StringP("secret", "s", "", "secret name")
+	RootCmd.PersistentFlags().BoolP("set", "w", false, "set secret value")
+	RootCmd.PersistentFlags().StringP("key", "k", "", "secret key")
+	RootCmd.PersistentFlags().StringP("value", "V", "", "secret value")
+	RootCmd.PersistentFlags().BoolP("get", "g", false, "get secret value")
+	RootCmd.PersistentFlags().BoolP("delete", "d", false, "delete secret")
+	RootCmd.PersistentFlags().BoolP("list", "l", false, "list secrets")
+	RootCmd.PersistentFlags().BoolP("all", "a", false, "list all secrets")
+	RootCmd.PersistentFlags().StringP("env", "e", "", "environment")
 }
