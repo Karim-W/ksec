@@ -44,6 +44,10 @@ func KubectlSecretsSvc(conf *models.Secrets) {
 		handleEnvPath(conf.EnvPath, conf.Namespace, conf.Secret)
 		return
 	}
+	if conf.FillPath != "" {
+		handleFillPath(conf.FillPath, conf.Namespace, conf.Secret)
+		return
+	}
 	if conf.Set {
 		addKubeSecret(conf.Namespace, conf.Secret, conf.Key, conf.Value)
 		return
@@ -185,5 +189,33 @@ func generateDecalrationFile(secret string, vals *map[string][]byte) {
 	_, err = file.WriteString(overall)
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func handleFillPath(path string, namespace string, secret string) {
+	// fetch secrets
+	s, err := GetKubeClient().CoreV1().Secrets(namespace).Get(context.TODO(), secret, metav1.GetOptions{})
+	if err != nil {
+		println(err.Error())
+		return
+	}
+	secretsMap := make(map[string][]byte)
+	for k, v := range s.Data {
+		secretsMap[k] = v
+	}
+	//create the file
+	handleGenerateFileWithSecrets(path, &secretsMap)
+}
+
+func handleGenerateFileWithSecrets(path string, secrets *map[string][]byte) {
+	//create file
+	file, err := os.Create(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	//write to file
+	for k, v := range *secrets {
+		file.WriteString(k + "=" + string(v) + "\n")
 	}
 }

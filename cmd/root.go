@@ -27,6 +27,7 @@ var RootCmd = &cobra.Command{
 			List:      cmd.Flag("list").Value.String() == "true",
 			All:       cmd.Flag("all").Value.String() == "true",
 			EnvPath:   cmd.Flag("env").Value.String(),
+			FillPath:  cmd.Flag("fill").Value.String(),
 		}
 		service.KubectlSecretsSvc(c)
 	},
@@ -52,5 +53,6 @@ func init() {
 	RootCmd.PersistentFlags().BoolP("delete", "d", false, "delete secret")
 	RootCmd.PersistentFlags().BoolP("list", "l", false, "list secrets")
 	RootCmd.PersistentFlags().BoolP("all", "a", false, "list all secrets")
-	RootCmd.PersistentFlags().StringP("env", "e", "", "environment")
+	RootCmd.PersistentFlags().StringP("env", "e", "", "Create from a .env file")
+	RootCmd.PersistentFlags().StringP("fill", "f", "", "Fill a file with secrets")
 }

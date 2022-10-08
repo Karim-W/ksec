@@ -12,4 +12,5 @@ type Secrets struct {
 	All       bool
 	Operation string
 	EnvPath   string
+	FillPath  string
 }
