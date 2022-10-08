@@ -6,6 +6,7 @@ KSec is a command line tool to manage secrets in Kubernetes with the following f
 - [x] Get a secret from Kubernetes secrets 
 - [x] Delete a secret from Kubernetes secrets
 - [x] List all secrets in a namespace
+- [x] Fill a file with a secret from Kubernetes secrets
 
 ## Installation
 to install Ksec use the following command:
@@ -29,4 +30,7 @@ this command will retrieve a the value of secret within an existing kubernetes s
 ### Delete a secret from Kubernetes secrets
 ` ksec -d -n <namespace> -s <secret name> -k <key> `
 this command will delete a secret from an existing kubernetes secret
+
+### Fill a file with secrets from Kubernetes secrets
+` ksec -f <file path> -n <namespace> -s <secret name> `
 
