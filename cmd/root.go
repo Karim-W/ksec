@@ -6,6 +6,7 @@ import (
 	"github.com/karim-w/ksec/models"
 	"github.com/karim-w/ksec/service"
 	"github.com/spf13/cobra"
+	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 )
 
 const VERSION = "0.0.1"
@@ -43,6 +44,7 @@ func Execute() {
 }
 
 func init() {
+	RootCmd.AddCommand(cobracompletefig.CreateCompletionSpecCommand())
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 	RootCmd.PersistentFlags().StringP("namespace", "n", "default", "namespace")
 	RootCmd.PersistentFlags().StringP("secret", "s", "", "secret name")
