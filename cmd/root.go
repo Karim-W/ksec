@@ -18,23 +18,28 @@ var RootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 		c := &models.Secrets{
-			Namespace: cmd.Flag("namespace").Value.String(),
-			Secret:    cmd.Flag("secret").Value.String(),
-			Set:       cmd.Flag("set").Value.String() == "true",
-			Key:       cmd.Flag("key").Value.String(),
-			Value:     cmd.Flag("value").Value.String(),
-			Get:       cmd.Flag("get").Value.String() == "true",
-			Delete:    cmd.Flag("delete").Value.String() == "true",
-			List:      cmd.Flag("list").Value.String() == "true",
-			All:       cmd.Flag("all").Value.String() == "true",
-			EnvPath:   cmd.Flag("env").Value.String(),
-			FillPath:  cmd.Flag("fill").Value.String(),
+			Namespace:  cmd.Flag("namespace").Value.String(),
+			Secret:     cmd.Flag("secret").Value.String(),
+			Set:        cmd.Flag("set").Value.String() == "true",
+			Key:        cmd.Flag("key").Value.String(),
+			Value:      cmd.Flag("value").Value.String(),
+			Get:        cmd.Flag("get").Value.String() == "true",
+			Delete:     cmd.Flag("delete").Value.String() == "true",
+			List:       cmd.Flag("list").Value.String() == "true",
+			All:        cmd.Flag("all").Value.String() == "true",
+			EnvPath:    cmd.Flag("env").Value.String(),
+			FillPath:   cmd.Flag("fill").Value.String(),
+			Modify:     cmd.Flag("modify").Value.String() == "true",
+			FileFormat: cmd.Flag("file-format").Value.String(),
 		}
 		service.KubectlSecretsSvc(c)
 	},
 }
-var Verbose bool
-var Source string
+
+var (
+	Verbose bool
+	Source  string
+)
 
 func Execute() {
 	err := RootCmd.Execute()
@@ -57,4 +62,6 @@ func init() {
 	RootCmd.PersistentFlags().BoolP("all", "a", false, "list all secrets")
 	RootCmd.PersistentFlags().StringP("env", "e", "", "Create from a .env file")
 	RootCmd.PersistentFlags().StringP("fill", "f", "", "Fill a file with secrets")
+	RootCmd.PersistentFlags().BoolP("modify", "m", false, "Modify a secret in an interactive mode")
+	RootCmd.PersistentFlags().StringP("file-format", "F", "yaml", "File format")
 }
