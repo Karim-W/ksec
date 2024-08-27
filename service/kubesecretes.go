@@ -346,8 +346,14 @@ func modifyKubeSecret(namespace, secret, format string) {
 
 	defer file.Close()
 
+	size, err := file.Stat()
+	if err != nil {
+		println(err.Error())
+		return
+	}
+
 	// read file whole
-	byts := make([]byte, 1024)
+	byts := make([]byte, size.Size())
 	n, err := file.Read(byts)
 	if err != nil {
 		println(err.Error())
@@ -373,6 +379,7 @@ func modifyKubeSecret(namespace, secret, format string) {
 	}
 
 	if err != nil {
+		fmt.Println("bytssss", string(byts))
 		println(err.Error())
 		return
 	}
